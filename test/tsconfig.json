@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["./**/*"],
+  "compilerOptions": {
+    "baseUrl": "../",
+    "rootDir": "../",
+    "resolveJsonModule": true,
+    "paths": {
+      "streambird-node": ["src/index"]
+    }
+  }
+}

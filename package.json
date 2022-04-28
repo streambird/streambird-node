@@ -1,0 +1,63 @@
+{
+  "name": "streambird",
+  "version": "1.0.7",
+  "description": "Node.js library for the Streambird API",
+  "keywords": [
+    "streambird",
+    "passwordless authentication",
+    "verification",
+    "api"
+  ],
+  "homepage": "https://github.com/streambird/streambird-node#readme",
+  "license": "MIT",
+  "author": "Streambird <dev@streambird.io> (https://docs.streambird.io)",
+  "repository": "github:streambird/streambird-node",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rollup -c rollup.config.ts",
+    "inspect": "tslint 'src/**/*.ts' && prettier --check README.md",
+    "format": "tslint 'src/**/*.ts' --fix && prettier --write README.md",
+    "test": "jest",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "streambird-node": "<rootDir>/src/index"
+    },
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "test/tsconfig.json"
+      }
+    }
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^6.2.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@types/jest": "^27.4.1",
+    "jest": "^27.5.1",
+    "nock": "^13.2.4",
+    "prettier": "^1.18.2",
+    "rollup": "^1.24.0",
+    "rollup-plugin-typescript2": "^0.25.3",
+    "ts-jest": "^27.1.4",
+    "tslint": "^5.20.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^4.0.5"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "jose": "^4.6.2"
+  }
+}
