@@ -40,7 +40,7 @@ Configure with your API token and region:
 
 ```js
 const streambird = new Streambird({
-  apiToken: process.env.STREAMBIRD_API_TOKEN,
+  apiKey: process.env.STREAMBIRD_API_TOKEN,
 });
 ```
 
