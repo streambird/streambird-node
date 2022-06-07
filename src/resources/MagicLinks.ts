@@ -29,8 +29,8 @@ export type MagicLinkInviteRequest = {
   lastName?: string;
   middleName?: string;
   inviteRedirectUrl?: string;
-  inviteExpiresIn: number;
-  deviceFingerprint: DeviceFingerprint;
+  inviteExpiresIn?: number;
+  deviceFingerprint?: DeviceFingerprint;
 }
 
 export type MagicLinkInviteResponse = {
@@ -42,8 +42,8 @@ export type MagicLinkInviteResponse = {
 
 export type MagicLinkEmbeddableRequest = {
   userId: string;
-  expiresIn: number;
-  deviceFingerprint: DeviceFingerprint;
+  expiresIn?: number;
+  deviceFingerprint?: DeviceFingerprint;
 }
 
 export type MagicLinkEmbeddableResponse = {
@@ -98,7 +98,7 @@ export class MagicLinks extends Resource<never> {
       bodyData['device_fingerprint'] = loginOrCreateRequest.deviceFingerprint;
     }
 
-    if(loginOrCreateRequest.requiresVerification) {
+    if(loginOrCreateRequest.requiresVerification !== null && loginOrCreateRequest.requiresVerification !== undefined) {
       bodyData['requires_verification'] = loginOrCreateRequest.requiresVerification;
     }
 
@@ -135,7 +135,7 @@ export class MagicLinks extends Resource<never> {
       bodyData['device_fingerprint'] = inviteRequest.deviceFingerprint;
     }
 
-    return this.request({ method: Method.POST, body: bodyData, path: 'invite' });
+    return this.request({ method: Method.POST, body: bodyData, path: 'email/invite' });
   }
   
   public async create(embeddableRequest: MagicLinkEmbeddableRequest): Promise<MagicLinkEmbeddableResponse> {

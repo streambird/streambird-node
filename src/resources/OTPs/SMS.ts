@@ -46,8 +46,8 @@ export class SMS extends Resource<never> {
       bodyData['device_fingerprint'] = sendRequest.deviceFingerprint;
     }
 
-    if(sendRequest.requiresVerification) {
-      bodyData['requies_verification'] = sendRequest.requiresVerification;
+    if(sendRequest.requiresVerification !== null && sendRequest.requiresVerification !== undefined) {
+      bodyData['requires_verification'] = sendRequest.requiresVerification;
     }
 
     return this.request({ method: Method.POST, body: bodyData, path: 'sms/login_or_create' });

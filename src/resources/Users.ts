@@ -34,6 +34,14 @@ export type User = {
   totps?: Array<UserTOTPAttribute> | null
 };
 
+export type UpdateUserRequest = {
+  firstName?: string | null;
+  middleName?: string | null;
+  lastName?: string | null;
+  emails?: Array<string>;
+  phoneNumbers?: Array<string>;
+};
+
 export type UpdateUserResponse = {
   userId: string;
   phoneNumbers: Array<UserPhoneNumberResponse>;
@@ -80,6 +88,25 @@ export type UserDeleteResponse = {
   message: string;
 }
 
+export type SearchRequest = {
+  limit: number;
+  startingAfter?: string;
+  filters: SearchFilter;
+}
+
+export type SearchFilter = {
+  operator: 'AND' | 'OR',
+  fields: Array<SearchFilterField>
+}
+
+export type SearchFilterField = {
+  field: 'user_id' | 'status' | 'full_name_match' | 'phone_number' | 'phone_number_id' | 'phone_number_match' | 'phone_number_verified' | 'email' | 'email_id' | 'email_verified' | 'email_match' | 'wallet_public_address' | 'wallet_id' | 'totp_id' | 'totp_verified' | 'idp_provider';
+  operator: 'eq' | 'between' | 'lt' | 'gt';
+  value?: any;
+  secondValue?: any;
+  values?: Array<any>
+}
+
 export class Users extends Resource<never> {
   constructor(axiosInstance: AxiosInstance) {
     super("auth/users", axiosInstance);
@@ -116,45 +143,41 @@ export class Users extends Resource<never> {
 
   public async update(
     userId: string,
-    firstName?: string,
-    middleName?: string,
-    lastName?: string,
-    emails?: Array<{ email: string}>,
-    phoneNumbers?: Array<{ phone_number: string}>
+    options: UpdateUserRequest
   ): Promise<UpdateUserResponse> {
     let bodyData:any = {};
 
-    if(firstName && firstName.trim().length > 0) {
-      bodyData['first_name'] = firstName;
+    if(options.firstName && options.firstName.trim().length > 0) {
+      bodyData['first_name'] = options.firstName;
     }
 
-    if(middleName && middleName.trim().length > 0) {
-      bodyData['middle_name'] = middleName;
+    if(options.middleName && options.middleName.trim().length > 0) {
+      bodyData['middle_name'] = options.middleName;
     }
 
-    if(lastName && lastName.trim().length > 0) {
-      bodyData['last_name'] = lastName;
+    if(options.lastName && options.lastName.trim().length > 0) {
+      bodyData['last_name'] = options.lastName;
     }
 
-    if(emails) {
+    if(options.emails) {
       bodyData['emails'] = [];
 
-      emails.map((email) => {
-        bodyData['emails'].append({ email: email });
+      options.emails && options.emails.map((email) => {
+        bodyData['emails'].push({ email: email });
       })
     }
 
-    if(phoneNumbers) {
+    if(options.phoneNumbers) {
       bodyData['phone_numbers'] = [];
 
-      phoneNumbers.map((phoneNumber) => {
-        bodyData['phone_numbers'].append({ phone_number: phoneNumber });
+      options.phoneNumbers && options.phoneNumbers.map((phoneNumber) => {
+        bodyData['phone_numbers'].push({ phone_number: phoneNumber });
       })
     }
 
     return this.request({
       method: Method.PUT,
-      path: `auth/users/${userId}/update`,
+      path: `${userId}/update`,
       body: bodyData
     });
   }
@@ -177,5 +200,61 @@ export class Users extends Resource<never> {
 
   public async deleteWallet(walletId: string): Promise<UserDeleteResponse> {
     return this.request({ method: Method.DELETE, path: `wallets/${walletId}/delete` });
+  }
+
+  public async search(searchRequest: SearchRequest): Promise<User> {
+    let bodyData:any = {}
+
+    bodyData['limit'] = searchRequest.limit;
+
+    if(searchRequest.startingAfter) {
+      bodyData['starting_after'] = searchRequest.startingAfter;
+    }
+
+    if(searchRequest && searchRequest.filters) {
+      bodyData['filters'] = {};
+
+      bodyData['filters']['operator'] = searchRequest.filters.operator;
+
+      if(searchRequest.filters.fields) {
+
+        let fieldsToAdd:any = []
+
+        searchRequest.filters.fields.map((field) => {
+          let fieldObj:any = {}
+
+          fieldObj['field'] = field.field;
+          fieldObj['operator'] = field.operator;
+
+          if(field.value) {
+            fieldObj['value'] = field.value;
+          }
+
+          if(field.secondValue) {
+            fieldObj['second_value'] = field.secondValue
+          }
+
+          if(field.values) {
+            fieldObj['values'] = field.values;
+          }
+
+          fieldsToAdd.push(fieldObj);
+        })
+
+        if(fieldsToAdd.length > 0) {
+          bodyData['filters']['fields'] = fieldsToAdd;
+        }
+      }
+    }
+
+    return this.request({ method: Method.POST, body: bodyData, path: 'search' });
+  }
+
+  public async deleteWebAuthn(webauthnCredentialId: string) {
+    return this.request({ method: Method.DELETE, path: `webauthn_credentials/${webauthnCredentialId}/delete` });
+  }
+
+  public async deleteTOTP(totpId: string) {
+    return this.request({ method: Method.DELETE, path: `totps/${totpId}/delete` });
   }
 }

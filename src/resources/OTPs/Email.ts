@@ -45,9 +45,11 @@ export class Email extends Resource<never> {
       bodyData['device_fingerprint'] = loginOrCreateRequest.deviceFingerprint;
     }
 
-    if(loginOrCreateRequest.requiresVerification) {
-      bodyData['requies_verification'] = loginOrCreateRequest.requiresVerification;
+    if(loginOrCreateRequest.requiresVerification !== null && loginOrCreateRequest.requiresVerification !== undefined) {
+      bodyData['requires_verification'] = loginOrCreateRequest.requiresVerification;
     }
+
+    console.log('bodyData', bodyData)
 
     return this.request({ method: Method.POST, body: bodyData, path: 'email/login_or_create' });
   }

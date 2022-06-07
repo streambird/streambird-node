@@ -24,8 +24,8 @@ export type WalletVerifyRequest = {
   publicAddress: string;
   signature: string;
   sessionExpiresIn?: number;
-  sessionToken: string;
-  sessionJwt: string;
+  sessionToken?: string;
+  sessionJwt?: string;
 };
 
 export type WalletVerifyResponse = {
