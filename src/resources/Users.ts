@@ -19,7 +19,6 @@ export type CreateUserResponse = {
 
 export type User = {
   userId: string | null;
-  appId: string | null;
   firstName: string | null;
   middleName: string | null;
   lastName: string | null;
@@ -31,7 +30,8 @@ export type User = {
   emails?: Array<UserEmailResponse> | null;
   phoneNumbers?: Array<UserPhoneNumberResponse> | null;
   wallets?: Array<UserWalletResponse> | null;
-  totps?: Array<UserTOTPAttribute> | null
+  totps?: Array<UserTOTPAttribute> | null;
+  idpProviders?: Array<UserIDPProvider> | null;
 };
 
 export type UpdateUserRequest = {
@@ -46,6 +46,7 @@ export type UpdateUserResponse = {
   userId: string;
   phoneNumbers: Array<UserPhoneNumberResponse>;
   emails: Array<UserEmailResponse>;
+  user: User;
 }
 
 export type UserEmailResponse = {
@@ -66,7 +67,6 @@ export type UserPhoneNumberResponse = {
 
 export type UserWalletResponse = {
   id: string;
-  appId: string;
   userId: string;
   publicAddress: string;
   walletType: string;
@@ -79,6 +79,17 @@ export type UserTOTPAttribute = {
   id: string;
   userId: string;
   verified: boolean;
+  updatedAt: number;
+  createdAt: number;
+}
+
+export type UserIDPProvider = {
+  id: string;
+  provider: string;
+  providerSubject: string;
+  idpType: string;
+  methodId: string;
+  methodType: string;
   updatedAt: number;
   createdAt: number;
 }
