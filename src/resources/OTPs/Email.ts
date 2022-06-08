@@ -49,8 +49,6 @@ export class Email extends Resource<never> {
       bodyData['requires_verification'] = loginOrCreateRequest.requiresVerification;
     }
 
-    console.log('bodyData', bodyData)
-
     return this.request({ method: Method.POST, body: bodyData, path: 'email/login_or_create' });
   }
 
