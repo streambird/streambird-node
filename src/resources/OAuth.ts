@@ -110,6 +110,24 @@ export class OAuth extends Resource<OAuthVerifyRequest> {
     return this.request({ method: Method.GET, path: `discord/begin?${params}` });
   }
 
+  public async github(request: OAuthProviderRequest): Promise<RedirectUrlResponse> {
+    let params = `public_token=${request.publicToken}`;
+
+    if(request.redirect) {
+      params += `&redirect=${request.redirect}`;
+    }
+
+    if(request.loginRedirectUrl) {
+      params += `&login_redirect_url=${request.loginRedirectUrl}`;
+    }
+
+    if(request.registrationRedirectUrl) {
+      params += `&registration_redirect_url=${request.registrationRedirectUrl}`;
+    }
+
+    return this.request({ method: Method.GET, path: `github/begin?${params}` });
+  }
+
   public async verify(oauthRequest: OAuthVerifyRequest): Promise<OAuthVerifyResponse> {
 
     let bodyData:any = {
